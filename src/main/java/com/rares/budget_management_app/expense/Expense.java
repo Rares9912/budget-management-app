@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -29,6 +30,9 @@ public class Expense {
 
     @Column
     private String description;
+
+    @Column(name = "expense_date", nullable = false)
+    private LocalDate expenseDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
