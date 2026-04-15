@@ -3,11 +3,10 @@ package com.rares.budget_management_app.common.exception;
 import lombok.Getter;
 
 @Getter
-public class PastBudgetModificationException extends RuntimeException {
-
+public class InvalidMonthException extends RuntimeException {
     private Error error;
 
-    public PastBudgetModificationException(Error error, Object... args) {
+    public InvalidMonthException(Error error, Object... args) {
         super(error.format(args));
         this.error = error;
     }

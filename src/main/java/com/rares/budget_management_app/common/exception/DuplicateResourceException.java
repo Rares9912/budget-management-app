@@ -1,11 +1,14 @@
 package com.rares.budget_management_app.common.exception;
 
-public class DuplicateResourceException extends RuntimeException {
-    public DuplicateResourceException(String message) {
-        super(message);
-    }
+import lombok.Getter;
 
-    public DuplicateResourceException(ErrorMessage error, Object... args) {
+@Getter
+public class DuplicateResourceException extends RuntimeException {
+
+    private Error error;
+
+    public DuplicateResourceException(Error error, Object... args) {
         super(error.format(args));
+        this.error = error;
     }
 }
