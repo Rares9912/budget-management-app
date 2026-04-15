@@ -1,5 +1,7 @@
 package com.rares.budget_management_app.report;
 
+import com.rares.budget_management_app.common.exception.Error;
+import com.rares.budget_management_app.common.exception.InvalidMonthException;
 import com.rares.budget_management_app.user.User;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +27,20 @@ public class ReportController {
     @GetMapping("/monthly")
     public ResponseEntity<byte[]> getMonthlyReport(
             @AuthenticationPrincipal User currentUser,
-            @RequestParam int month,
+            @RequestParam String month,
             @RequestParam int year) {
 
-        byte[] pdf = reportService.generateMonthlyReport(currentUser, month, year);
+        int monthValue;
+        try {
+            monthValue = Month.valueOf(month.toUpperCase()).getValue();
+        } catch (IllegalArgumentException e) {
+            throw new InvalidMonthException(Error.INVALID_MONTH, month);
+        }
 
-        String filename = String.format("lunar-report-%s-%d.pdf",
-                Month.of(month).name().toLowerCase(), year);
+        byte[] pdf = reportService.generateMonthlyReport(currentUser, monthValue, year);
+
+        String filename = String.format("monthly-report-%s-%d.pdf",
+                Month.of(monthValue).name().toLowerCase(), year);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_PDF)
@@ -46,7 +55,7 @@ public class ReportController {
 
         byte[] pdf = reportService.generateAnnualReport(currentUser, year);
 
-        String filename = String.format("raport-anual-%d.pdf", year);
+        String filename = String.format("annual-report-%d.pdf", year);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_PDF)
