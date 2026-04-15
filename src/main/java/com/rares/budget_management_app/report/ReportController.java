@@ -30,22 +30,21 @@ public class ReportController {
             @RequestParam String month,
             @RequestParam int year) {
 
-        int monthValue;
         try {
-            monthValue = Month.valueOf(month.toUpperCase()).getValue();
-        } catch (IllegalArgumentException e) {
+            int monthValue = Month.valueOf(month.toUpperCase()).getValue();
+            byte[] pdf = reportService.generateMonthlyReport(currentUser, monthValue, year);
+
+            String filename = String.format("monthly-report-%s-%d.pdf",
+                    Month.of(monthValue).name().toLowerCase(), year);
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                    .body(pdf);
+
+        } catch (IllegalArgumentException e){
             throw new InvalidMonthException(Error.INVALID_MONTH, month);
         }
-
-        byte[] pdf = reportService.generateMonthlyReport(currentUser, monthValue, year);
-
-        String filename = String.format("monthly-report-%s-%d.pdf",
-                Month.of(monthValue).name().toLowerCase(), year);
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_PDF)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-                .body(pdf);
     }
 
     @GetMapping("/annual")

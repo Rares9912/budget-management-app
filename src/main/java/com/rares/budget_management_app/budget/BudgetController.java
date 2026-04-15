@@ -29,15 +29,12 @@ public class BudgetController {
                                                            @RequestParam(required = false) String month,
                                                            @RequestParam(required = false) Integer year) {
 
-        int monthValue;
         try {
-            monthValue = Month.valueOf(month.toUpperCase()).getValue();
-        } catch (IllegalArgumentException e) {
+            Integer monthValue = month != null ? Month.valueOf(month.toUpperCase()).getValue() : null;
+            return ResponseEntity.ok(budgetService.getBudgets(user, category, monthValue, year));
+        } catch (IllegalArgumentException e){
             throw new InvalidMonthException(Error.INVALID_MONTH, month);
         }
-
-        return ResponseEntity.ok(
-                budgetService.getBudgets(user, category, monthValue, year));
     }
 
     @PostMapping

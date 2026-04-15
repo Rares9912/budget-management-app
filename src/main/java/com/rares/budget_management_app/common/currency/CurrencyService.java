@@ -26,9 +26,10 @@ public class CurrencyService {
             return BigDecimal.ONE;
         }
 
+        String url = apiUrl + "?from=" + fromCurrency + "&to=" + toCurrency;
         try {
             CurrencyRateResponse response = restClient.get()
-                    .uri(apiUrl + "?from=" + fromCurrency + "&to=" + toCurrency)
+                    .uri(url)
                     .retrieve()
                     .body(CurrencyRateResponse.class);
 

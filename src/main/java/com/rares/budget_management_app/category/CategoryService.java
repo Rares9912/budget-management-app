@@ -6,7 +6,6 @@ import com.rares.budget_management_app.category.dto.CategoryResponse;
 import com.rares.budget_management_app.common.exception.DuplicateResourceException;
 import com.rares.budget_management_app.common.exception.Error;
 import com.rares.budget_management_app.common.exception.ResourceNotFoundException;
-import com.rares.budget_management_app.expense.Expense;
 import com.rares.budget_management_app.expense.ExpenseRepository;
 import com.rares.budget_management_app.user.User;
 import lombok.NonNull;
@@ -40,7 +39,9 @@ public class CategoryService {
                 .stream()
                 .collect(Collectors.groupingBy(
                         e -> e.getCategory().getId(),
-                        Collectors.reducing(BigDecimal.ZERO, Expense::getValue, BigDecimal::add)
+                        Collectors.reducing(
+                                BigDecimal.ZERO,
+                                e -> e.getValue().multiply(e.getExchangeRate()), BigDecimal::add)
                 ));
 
         return categoryRepository.findAllByUserId(currentUser.getId())
@@ -69,8 +70,9 @@ public class CategoryService {
         BigDecimal moneySpent = expenseRepository.findAllByUserIdAndCategoryIdAndMonthAndYear(
                 currentUser.getId(), category.getId(), currentMonth, currentYear)
                 .stream()
-                .map(Expense::getValue)
+                .map(e -> e.getValue().multiply(e.getExchangeRate()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+        System.out.println("moneySpent: " + moneySpent);
 
         return toResponse(category, budgetLimit, moneySpent);
     }

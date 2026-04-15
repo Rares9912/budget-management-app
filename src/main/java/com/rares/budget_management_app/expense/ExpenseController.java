@@ -33,15 +33,12 @@ public class ExpenseController {
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) LocalDate date) {
 
-        int monthValue;
         try {
-            monthValue = Month.valueOf(month.toUpperCase()).getValue();
-        } catch (IllegalArgumentException e) {
+            Integer monthValue = month != null ? Month.valueOf(month.toUpperCase()).getValue() : null;
+            return ResponseEntity.ok(expenseService.getExpenses(user, categoryName, monthValue, year, date));
+        } catch (IllegalArgumentException e){
             throw new InvalidMonthException(Error.INVALID_MONTH, month);
         }
-
-        return ResponseEntity.ok(
-                expenseService.getExpenses(user, categoryName, monthValue, year, date));
     }
 
     @PostMapping

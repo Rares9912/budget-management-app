@@ -195,12 +195,13 @@ public class ExpenseService {
                 .findByUserIdAndCategoryIdAndMonthAndYear(
                         currentUser.getId(), category.getId(), month, year)
                 .map(budget -> currencyService.getExchangeRate(expenseCurrency, budget.getCurrency()))
-                .orElse(BigDecimal.ONE);
+                .orElse(currencyService.getExchangeRate(expenseCurrency, "RON"));
     }
 
     private ExpenseResponse toResponse(Expense expense, String warning) {
         return ExpenseResponse.builder()
                 .id(expense.getId())
+                .categoryId(expense.getCategory().getId())
                 .categoryName(expense.getCategory().getName())
                 .value(expense.getValue())
                 .currency(expense.getCurrency())

@@ -6,6 +6,8 @@ import com.rares.budget_management_app.budget.dto.BudgetRequest;
 import com.rares.budget_management_app.budget.dto.BudgetResponse;
 import com.rares.budget_management_app.category.dto.CategoryRequest;
 import com.rares.budget_management_app.category.dto.CategoryResponse;
+import com.rares.budget_management_app.common.exception.Error;
+import com.rares.budget_management_app.common.exception.InvalidMonthException;
 import com.rares.budget_management_app.expense.dto.ExpenseRequest;
 import com.rares.budget_management_app.expense.dto.ExpenseResponse;
 import com.rares.budget_management_app.user.dto.UserResponse;
@@ -102,8 +104,12 @@ public class AdminController {
                                                                   @RequestParam(required = false) String category,
                                                                   @RequestParam(required = false) String month,
                                                                   @RequestParam(required = false) Integer year) {
-        Integer monthValue = month != null ? Month.valueOf(month.toUpperCase()).getValue() : null;
-        return ResponseEntity.ok(adminService.getUserExpenses(userId, category, monthValue, year));
+        try {
+            Integer monthValue = month != null ? Month.valueOf(month.toUpperCase()).getValue() : null;
+            return ResponseEntity.ok(adminService.getUserExpenses(userId, category, monthValue, year));
+        } catch (IllegalArgumentException e){
+            throw new InvalidMonthException(Error.INVALID_MONTH, month);
+        }
     }
 
     @PostMapping("/users/{userId}/expenses")
