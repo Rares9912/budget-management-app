@@ -3,6 +3,7 @@ package com.rares.budget_management_app.category;
 import com.rares.budget_management_app.category.dto.CategoryRequest;
 import com.rares.budget_management_app.category.dto.CategoryResponse;
 import com.rares.budget_management_app.user.User;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Category")
 @RestController
 @RequestMapping("/categories")
 @RequiredArgsConstructor
@@ -23,10 +25,10 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getAllCategories(user));
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/{id}")
     public ResponseEntity<CategoryResponse> getCategory(@AuthenticationPrincipal User user,
-                                                        @PathVariable String name) {
-        return ResponseEntity.ok(categoryService.getCategory(user, name));
+                                                        @PathVariable Integer id) {
+        return ResponseEntity.ok(categoryService.getCategory(user, id));
     }
 
     @PostMapping
@@ -37,11 +39,11 @@ public class CategoryController {
                 .body(categoryService.createCategory(user, request.getName()));
     }
 
-    @DeleteMapping("/{name}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCategory(@AuthenticationPrincipal User user,
-                                                 @PathVariable String name) {
-        categoryService.deleteCategory(user, name);
-        return ResponseEntity.ok("Categoria " + name + " a fost stearsa cu succes!");
+                                                 @PathVariable Integer id) {
+        String deletedName = categoryService.deleteCategory(user, id);
+        return ResponseEntity.ok("Category " + deletedName + " was successfully deleted!");
     }
 
 }

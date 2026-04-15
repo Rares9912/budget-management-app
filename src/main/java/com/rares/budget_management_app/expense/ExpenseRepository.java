@@ -6,11 +6,13 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Integer> {
     List<Expense> findAllByUserId(Integer userId);
     List<Expense> findAllByUserIdAndCategoryId(Integer userId, Integer categoryId);
     List<Expense> findAllByUserIdAndExpenseDate(Integer userId, LocalDate expenseDate);
+
 
     @Query("SELECT e FROM Expense e WHERE e.user.id = :userId " +
             "AND YEAR(e.expenseDate) = :year AND MONTH(e.expenseDate) = :month")
@@ -39,4 +41,16 @@ public interface ExpenseRepository extends JpaRepository<Expense, Integer> {
             @Param("categoryId") Integer categoryId,
             @Param("month") Integer month,
             @Param("year") Integer year);
+
+    @Query("SELECT e FROM Expense e WHERE e.user.id = :userId AND e.category.id = :categoryId " +
+            "AND YEAR(e.expenseDate) = :year AND MONTH(e.expenseDate) = :month " +
+            "AND e.currency != :currency")
+    List<Expense> findAllByUserIdAndCategoryIdAndMonthAndYearAndCurrencyNot(
+            @Param("userId") Integer userId,
+            @Param("categoryId") Integer categoryId,
+            @Param("month") Integer month,
+            @Param("year") Integer year,
+            @Param("currency") String currency);
+
+    Optional<Expense> findByIdAndUserId(Integer expenseId, Integer userId);
 }

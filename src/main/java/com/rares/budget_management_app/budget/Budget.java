@@ -27,6 +27,9 @@ public class Budget {
     @Column(nullable = false, precision = 11, scale = 2)
     private BigDecimal value;
 
+    @Column(nullable = false, length = 3)
+    private String currency;
+
     @Column(nullable = false)
     private Integer month;
 

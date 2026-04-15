@@ -26,6 +26,5 @@ public class CategoryResponse {
         private BigDecimal budgetLimit;
         private BigDecimal moneySpent;
         private BigDecimal moneyRemaining;
-        private Double percentageSpent;
     }
 }

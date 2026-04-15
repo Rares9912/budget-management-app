@@ -3,7 +3,8 @@ package com.rares.budget_management_app.auth;
 import com.rares.budget_management_app.auth.dto.AuthResponse;
 import com.rares.budget_management_app.auth.dto.LoginRequest;
 import com.rares.budget_management_app.auth.dto.RegisterRequest;
-import com.rares.budget_management_app.common.exception.EmailAlreadyExistsException;
+import com.rares.budget_management_app.common.exception.DuplicateResourceException;
+import com.rares.budget_management_app.common.exception.Error;
 import com.rares.budget_management_app.common.security.JwtUtil;
 import com.rares.budget_management_app.user.Role;
 import com.rares.budget_management_app.user.User;
@@ -25,7 +26,7 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new EmailAlreadyExistsException(request.getEmail());
+            throw new DuplicateResourceException(Error.EMAIL_ALREADY_EXISTS, request.getEmail());
         }
 
         User user = User.builder()

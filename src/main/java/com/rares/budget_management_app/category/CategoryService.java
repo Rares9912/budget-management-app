@@ -2,10 +2,9 @@ package com.rares.budget_management_app.category;
 
 import com.rares.budget_management_app.budget.Budget;
 import com.rares.budget_management_app.budget.BudgetRepository;
-import com.rares.budget_management_app.category.dto.CategoryRequest;
 import com.rares.budget_management_app.category.dto.CategoryResponse;
 import com.rares.budget_management_app.common.exception.DuplicateResourceException;
-import com.rares.budget_management_app.common.exception.ErrorMessage;
+import com.rares.budget_management_app.common.exception.Error;
 import com.rares.budget_management_app.common.exception.ResourceNotFoundException;
 import com.rares.budget_management_app.expense.Expense;
 import com.rares.budget_management_app.expense.ExpenseRepository;
@@ -15,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -52,15 +50,15 @@ public class CategoryService {
                 .toList();
     }
 
-    public CategoryResponse getCategory(User currentUser, String categoryName) {
+    public CategoryResponse getCategory(User currentUser, Integer categoryId) {
 
         int currentMonth = LocalDate.now().getMonthValue();
         int currentYear = LocalDate.now().getYear();
 
         Category category = categoryRepository
-                .findByUserIdAndName(currentUser.getId(), categoryName)
+                .findByIdAndUserId(categoryId, currentUser.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        ErrorMessage.CATEGORY_NOT_FOUND, categoryName));
+                        Error.CATEGORY_NOT_FOUND, categoryId));
 
         BigDecimal budgetLimit = budgetRepository
                 .findByUserIdAndCategoryIdAndMonthAndYear
@@ -79,7 +77,7 @@ public class CategoryService {
 
     public CategoryResponse createCategory(User currentUser, String categoryName) {
         if (categoryRepository.existsByUserIdAndName(currentUser.getId(), categoryName)) {
-            throw new DuplicateResourceException(ErrorMessage.CATEGORY_ALREADY_EXISTS, categoryName);
+            throw new DuplicateResourceException(Error.CATEGORY_ALREADY_EXISTS, categoryName);
         }
 
         Category category = Category.builder()
@@ -92,11 +90,12 @@ public class CategoryService {
         return toResponse(category, null, BigDecimal.ZERO);
     }
 
-    public void deleteCategory(User currentUser, String categoryName) {
-        Category categoryToDelete = categoryRepository.findByUserIdAndName(currentUser.getId(), categoryName)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessage.CATEGORY_NOT_FOUND, categoryName));
+    public String deleteCategory(User currentUser, Integer categoryId) {
+        Category categoryToDelete = categoryRepository.findByIdAndUserId(categoryId, currentUser.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(Error.CATEGORY_NOT_FOUND, categoryId));
 
         categoryRepository.delete(categoryToDelete);
+        return categoryToDelete.getName();
     }
 
     private CategoryResponse toResponse(Category category,
@@ -121,17 +120,11 @@ public class CategoryService {
 
         BigDecimal moneyRemaining = budgetLimit.subtract(moneySpent);
 
-        double percentageSpent = budgetLimit.compareTo(BigDecimal.ZERO) > 0
-                ? moneySpent.divide(budgetLimit, 2, RoundingMode.HALF_UP)
-                             .multiply(BigDecimal.valueOf(100))
-                             .doubleValue()
-                : 0.0;
-
         return CategoryResponse.MonthDetails.builder()
                 .budgetLimit(budgetLimit)
                 .moneySpent(moneySpent)
                 .moneyRemaining(moneyRemaining)
-                .percentageSpent(percentageSpent)
                 .build();
     }
+
 }

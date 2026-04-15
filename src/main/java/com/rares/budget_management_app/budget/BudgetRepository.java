@@ -9,6 +9,9 @@ public interface BudgetRepository extends JpaRepository<Budget, Integer> {
     List<Budget> findAllByUserId(Integer userId);
     List<Budget> findAllByUserIdAndMonthAndYear(Integer userId, Integer month, Integer year);
     List<Budget> findAllByUserIdAndYear(Integer userId, Integer year);
+    List<Budget> findAllByUserIdAndCategoryIdAndYear(Integer userId, Integer categoryId, Integer year);
+    List<Budget> findAllByUserIdAndCategoryId(Integer userId, Integer categoryId);
     Optional<Budget> findByUserIdAndCategoryIdAndMonthAndYear(Integer userId, Integer categoryId, Integer month, Integer year);
+
     boolean existsByUserIdAndCategoryIdAndMonthAndYear(Integer userId, Integer categoryId, Integer month, Integer year);
 }

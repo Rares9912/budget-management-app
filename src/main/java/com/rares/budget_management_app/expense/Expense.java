@@ -28,6 +28,12 @@ public class Expense {
     @Column(nullable = false, precision = 11, scale = 2)
     private BigDecimal value;
 
+    @Column(nullable = false, length = 3)
+    private String currency;
+
+    @Column(name = "exchange_rate", nullable = false, precision = 11, scale = 6)
+    private BigDecimal exchangeRate;
+
     @Column
     private String description;
 
