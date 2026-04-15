@@ -1,0 +1,6 @@
+ALTER TABLE budgets
+    ADD COLUMN currency VARCHAR(3) NOT NULL DEFAULT 'RON';
+
+ALTER TABLE expenses
+    ADD COLUMN currency        VARCHAR(3)    NOT NULL DEFAULT 'RON',
+    ADD COLUMN exchange_rate DECIMAL(11, 6) NOT NULL DEFAULT 1;
