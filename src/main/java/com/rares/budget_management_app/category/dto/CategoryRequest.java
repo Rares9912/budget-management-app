@@ -1,5 +1,6 @@
 package com.rares.budget_management_app.category.dto;
 
+import com.rares.budget_management_app.common.Constants;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryRequest {
-    @NotBlank(message = "Numele categoriei este obligatoriu")
-    @Size(max = 30, message = "Numele categoriei nu poate depasi 30 de caractere")
+    @NotBlank(message = Constants.CATEGORY_NAME_REQUIRED)
+    @Size(max = 30, message = Constants.CATEGORY_NAME_MIN_CHARACTERS)
     private String name;
 }

@@ -4,6 +4,7 @@ import com.rares.budget_management_app.budget.dto.BudgetRequest;
 import com.rares.budget_management_app.budget.dto.BudgetResponse;
 import com.rares.budget_management_app.category.Category;
 import com.rares.budget_management_app.category.CategoryRepository;
+import com.rares.budget_management_app.common.Constants;
 import com.rares.budget_management_app.common.currency.CurrencyService;
 import com.rares.budget_management_app.common.exception.DuplicateResourceException;
 import com.rares.budget_management_app.common.exception.Error;
@@ -19,9 +20,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -95,7 +94,7 @@ public class BudgetService {
 
         String currency = request.getCurrency() != null
                 ? request.getCurrency().toUpperCase()
-                : "RON";
+                : Constants.DEFAULT_CURRENCY;
 
         Budget budget = Budget.builder()
                 .value(request.getValue())

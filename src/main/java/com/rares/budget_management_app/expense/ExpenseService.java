@@ -4,6 +4,7 @@ import com.rares.budget_management_app.budget.Budget;
 import com.rares.budget_management_app.budget.BudgetRepository;
 import com.rares.budget_management_app.category.Category;
 import com.rares.budget_management_app.category.CategoryRepository;
+import com.rares.budget_management_app.common.Constants;
 import com.rares.budget_management_app.common.currency.CurrencyService;
 import com.rares.budget_management_app.common.exception.ResourceNotFoundException;
 import com.rares.budget_management_app.expense.dto.ExpenseRequest;
@@ -80,7 +81,7 @@ public class ExpenseService {
         Category category = getCategoryById(currentUser, request.getCategoryId());
         String expenseCurrency = request.getCurrency() != null
                 ? request.getCurrency().toUpperCase()
-                : "RON";
+                : Constants.DEFAULT_CURRENCY;
 
         BigDecimal conversionRate = getExchangeRate(
                 currentUser, category, request.getExpenseDate(), expenseCurrency);
@@ -111,7 +112,7 @@ public class ExpenseService {
         Category category = getCategoryById(currentUser, request.getCategoryId());
         String expenseCurrency = request.getCurrency() != null
                 ? request.getCurrency().toUpperCase()
-                : "RON";
+                : Constants.DEFAULT_CURRENCY;
 
         BigDecimal exchangeRate = getExchangeRate(
                 currentUser, category, request.getExpenseDate(), expenseCurrency);
@@ -195,7 +196,7 @@ public class ExpenseService {
                 .findByUserIdAndCategoryIdAndMonthAndYear(
                         currentUser.getId(), category.getId(), month, year)
                 .map(budget -> currencyService.getExchangeRate(expenseCurrency, budget.getCurrency()))
-                .orElse(currencyService.getExchangeRate(expenseCurrency, "RON"));
+                .orElse(currencyService.getExchangeRate(expenseCurrency, Constants.DEFAULT_CURRENCY));
     }
 
     private ExpenseResponse toResponse(Expense expense, String warning) {

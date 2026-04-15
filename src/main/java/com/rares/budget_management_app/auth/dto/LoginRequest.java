@@ -1,5 +1,6 @@
 package com.rares.budget_management_app.auth.dto;
 
+import com.rares.budget_management_app.common.Constants;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -11,10 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LoginRequest {
 
-    @NotBlank(message = "Email-ul este obligatoriu")
-    @Email(message = "Format email invalid")
+    @NotBlank(message = Constants.EMAIL_REQUIRED)
+    @Email(message = Constants.INVALID_EMAIL_FORMAT)
     private String email;
 
-    @NotBlank(message = "Parola este obligatorie")
+    @NotBlank(message = Constants.PASSWORD_REQUIRED)
     private String password;
 }
