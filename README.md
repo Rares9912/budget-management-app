@@ -1,12 +1,12 @@
 # Budget Management App
 
-A REST API for personal budget and expense management built with Java 21, Spring Boot 3.5.1 and PostgreSQL.
+A REST API for personal budget and expense management built with Java 21, Spring Boot 3.5.13 and PostgreSQL.
 
 ## Prerequisites
 
 Make sure you have the following installed:
 
-- [Java 21](https://adoptium.net/)
+- [Java 21](https://www.oracle.com/java/technologies/downloads/)
 - [Maven](https://maven.apache.org/download.cgi)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
@@ -42,5 +42,7 @@ mvn spring-boot:run
 ```
 
 The application will start on `http://localhost:8080`.
+
+You can access Swagger UI on  `http://localhost:8080/swagger-ui/index.html`.
 
 Database migrations will run automatically via Flyway on startup.
