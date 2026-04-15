@@ -196,7 +196,7 @@ public class ExpenseService {
                 .findByUserIdAndCategoryIdAndMonthAndYear(
                         currentUser.getId(), category.getId(), month, year)
                 .map(budget -> currencyService.getExchangeRate(expenseCurrency, budget.getCurrency()))
-                .orElse(currencyService.getExchangeRate(expenseCurrency, Constants.DEFAULT_CURRENCY));
+                .orElseGet(() -> currencyService.getExchangeRate(expenseCurrency, Constants.DEFAULT_CURRENCY));
     }
 
     private ExpenseResponse toResponse(Expense expense, String warning) {

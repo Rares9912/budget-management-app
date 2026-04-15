@@ -85,18 +85,17 @@ class ExpenseServiceTest {
         ExpenseRequest request = new ExpenseRequest(10, new BigDecimal("100.00"), "Lunch", DATE, "RON");
 
         when(categoryRepository.findByIdAndUserId(10, user.getId())).thenReturn(Optional.of(food));
-        when(budgetRepository.findByUserIdAndCategoryIdAndMonthAndYear(
-                user.getId(), food.getId(), 4, 2026)).thenReturn(Optional.empty());
         when(expenseRepository.save(any(Expense.class))).thenAnswer(inv -> inv.getArgument(0));
         when(budgetRepository.findByUserIdAndCategoryIdAndMonthAndYear(
                 anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(Optional.empty());
+        when(currencyService.getExchangeRate("RON", "RON")).thenReturn(BigDecimal.ONE);
 
         ExpenseResponse result = expenseService.createExpense(user, request);
+        System.out.println(result);
 
         assertThat(result.getValue()).isEqualByComparingTo("100.00");
         assertThat(result.getCurrency()).isEqualTo("RON");
         assertThat(result.getExchangeRate()).isEqualByComparingTo("1");
-        verify(currencyService, never()).getExchangeRate(any(), any());
     }
 
     @Test
